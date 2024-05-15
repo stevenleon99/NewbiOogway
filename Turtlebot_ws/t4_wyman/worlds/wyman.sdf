@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='ASCII'?>
+<sdf version='1.7'>
+  <world name='warehouse'>
+    <physics type="ode">
+      <max_step_size>0.003</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin name='ignition::gazebo::systems::Physics' filename='libignition-gazebo-physics-system.so'/>
+    <plugin name='ignition::gazebo::systems::UserCommands' filename='libignition-gazebo-user-commands-system.so'/>
+    <plugin name='ignition::gazebo::systems::SceneBroadcaster' filename='libignition-gazebo-scene-broadcaster-system.so'/>
+
+    <scene>
+      <ambient>1 1 1 1</ambient>
+      <background>0.3 0.7 0.9 1</background>
+      <shadows>0</shadows>
+      <grid>false</grid>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>0</cast_shadows>
+      <pose>-5 -3 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0.0 0.0 1</normal>
+              <size>160 90</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0.0 0.0 1</normal>
+              <size>160 90</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+      <pose>0 0 0 0 0 0</pose>
+    </model>
+
+    <model name="ar_block">
+      <pose relative_to="world">0.9 -0.3 0 0 0 0</pose>
+      <link name="aruco_link">
+        <pose relative_to="__model__">0 0 0 0 0 0</pose>
+        <inertial>
+          <mass>10.0</mass>
+          <inertia>
+            <ixx>0.00417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00417</iyy>
+            <iyz>0</iyz>
+            <izz>0.0067</izz>
+          </inertia>
+        </inertial>
+        <visual name='tag'>
+          <pose>-0.0005 0 0.25 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.1 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <albedo_map>materials/marker_0001.png</albedo_map>
+            <pbr>
+              <metal>
+                <!-- TODO parameterize -->
+                <albedo_map>materials/marker_0001.png</albedo_map>
+              </metal>
+            </pbr>
+            <ambient>1.0 1.0 1.0 1.0</ambient>
+            <diffuse>1.0 1.0 1.0 1.0</diffuse>
+            <specular>1.0 1.0 1.0 1.0</specular>
+          </material>
+        </visual>
+        <visual name='back'>
+          <pose>0.0005 0 0.2 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.2 0.4</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.7 0.7 0.7 1.0</ambient>
+            <diffuse>0.7 0.7 0.7 1.0</diffuse>
+            <specular>0.7 0.7 0.7 1.0</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <pose>0 0 0.15 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.3</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="wyman">
+      <link name="wyman_link">
+        <pose>0 0 0 0 0 0</pose>
+        <collision name="wyman_collision">
+          <geometry>
+            <mesh>
+              <uri>meshes/wyman_decimated2.stl</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+	  <surface>
+	    <friction>
+	      <ode>
+          <mu>1.0</mu>
+          <mu2>1.0</mu2>
+	      </ode>
+	    </friction>
+	  </surface>
+        </collision>
+        <visual name="wyman">
+          <geometry>
+            <mesh>
+              <uri>meshes/wyman_decimated2.stl</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+          <cast_shadows>true</cast_shadows>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+      <static>true</static>
+    </model>
+
+  </world>
+</sdf>

@@ -1,0 +1,6 @@
+<library path="manipulatorx_plugin">
+    <class name="manipulatorx_moveit/ASBRPlanner" type="ASBRPlannerManager" base_class_type="planning_interface::PlannerManager">
+      <description>
+      </description>
+    </class>
+  </library>

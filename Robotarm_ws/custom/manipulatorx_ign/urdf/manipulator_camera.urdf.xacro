@@ -1,0 +1,108 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="manipulator_camera">
+
+    <xacro:arg name="simulation_controllers" default="" />
+    <xacro:arg name="sim_ignition" default="true" />
+
+    <!-- open manipulator X -->
+    <xacro:include filename="$(find manipulatorx_ign)/urdf/open_manipulator_x.urdf.xacro"/>
+    
+    <link name="world"/>
+    <xacro:manipulator parent="world"></xacro:manipulator>
+    <gazebo>
+        <plugin filename="libignition-gazebo-joint-state-publisher-system.so"
+            name="ignition::gazebo::systems::JointStatePublisher"/>
+    </gazebo>
+    <!-- manipulator control -->
+    <xacro:include filename="$(find manipulatorx_ign)/urdf/manipulator_control.xacro"/>
+    <xacro:manipulator_control name="mx" sim_ignition="$(arg sim_ignition)"></xacro:manipulator_control>
+
+    <xacro:if value="$(arg sim_ignition)">
+        <gazebo>
+            <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+                <parameters>/home/steve/Open_Manipulator/OpenManipulatorX_ros2_Humble/src/custom/manipulatorx_ign/config/mx_controllers.yaml</parameters>
+                <controller_manager_node_name>controller_manager</controller_manager_node_name>
+            </plugin>
+        </gazebo>
+    </xacro:if>
+
+
+    <!-- realsense camera -->
+    <link name="mx/link5/camera_depth"/>
+    <joint name="camera_parent_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="manipulator_camera_link"/>
+      <child link="mx/link5/camera_depth"/>
+    </joint>
+
+    <xacro:arg name="use_nominal_extrinsics" default="false"/>
+    <xacro:arg name="add_plug" default="false" />
+    <xacro:arg name="use_mesh" default="true" />
+
+    <xacro:include filename="$(find realsense2_description)/urdf/_d435i.urdf.xacro"/>
+    <xacro:sensor_d435 parent="mx/link5/camera_depth" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+        <origin xyz="-0.005 -0.035 -0.01" rpy="0 0 0"/>
+    </xacro:sensor_d435>
+    
+    <gazebo reference="camera_link">
+        <sensor type="camera" name="camera">
+          <update_rate> 10 </update_rate>
+          <topic> image_raw </topic>
+            <pose> 0 0 0   0 0 0 </pose>
+          <camera name="head">
+            <image>
+              <width> 1920 </width>
+              <height> 1080 </height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near> 0.02 </near>
+              <far> 3 </far>
+            </clip>
+            <noise>
+              <mean> 0.0 </mean>
+              <stddev> 0.01 </stddev>
+            </noise>
+            <lens>
+              <type> gnomolical </type>
+              <intrinsics>
+                      <fx>1663</fx>
+                      <fy>1663</fy>
+                      <cx>960</cx>
+                      <cy>540</cy>
+                      <s>0</s>	      
+              </intrinsics>
+              <projection>
+                      <p_fx>1663</p_fx>
+                      <p_fy>1663</p_fy>
+                      <p_cx>960</p_cx>
+                      <p_cy>540</p_cy>
+              </projection>
+            </lens>
+          </camera>
+          <plugin filename="ignition-gazebo-sensors-system"
+                  name="ignition::gazebo::systems::Sensors">
+          </plugin>
+        </sensor>
+  
+        <sensor name="camera_depth" type="depth">
+          <update_rate> 10 </update_rate>
+          <topic> camera_depth </topic>
+          <camera>
+            <horizontal_fov>1.047198</horizontal_fov>
+            <image>
+              <width> 480 </width>
+              <height> 270 </height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>3</far>
+            </clip>
+          </camera>
+        </sensor>
+      </gazebo>
+
+</robot>
+
+
+    

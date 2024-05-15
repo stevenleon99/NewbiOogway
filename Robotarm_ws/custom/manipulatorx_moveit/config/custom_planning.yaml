@@ -1,0 +1,7 @@
+planner_configs:
+  ASBRPlanner:
+    type: ASBRPlanner
+
+open_manipulator_x:
+  planner_configs:
+    - ASBRPlanner

@@ -1,0 +1,33 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="manipulator_camera">
+
+    <xacro:arg name="simulation_controllers" default="" />
+    <xacro:arg name="sim_ignition" default="true" />
+
+    <!-- open manipulator X -->
+    <xacro:include filename="$(find manipulatorx_handeye)/urdf/open_manipulator_x.urdf.xacro"/>
+    
+    <link name="world"/>
+    <xacro:manipulator parent="world"></xacro:manipulator>
+
+    <!-- realsense camera -->
+    <link name="mx/link5/camera_depth"/>
+    <joint name="camera_parent_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="manipulator_camera_link"/>
+      <child link="mx/link5/camera_depth"/>
+    </joint>
+
+    <xacro:arg name="use_nominal_extrinsics" default="false"/>
+    <xacro:arg name="add_plug" default="false" />
+    <xacro:arg name="use_mesh" default="true" />
+
+    <xacro:include filename="$(find realsense2_description)/urdf/_d435i.urdf.xacro"/>
+    <xacro:sensor_d435 parent="mx/link5/camera_depth" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+        <origin xyz="-0.005 -0.035 -0.01" rpy="0 0 0"/>
+    </xacro:sensor_d435>
+    
+
+</robot>
+
+
+    

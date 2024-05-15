@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="open_manipulator_x">
+
+    <xacro:arg name="sim_ignition" default="false" />
+
+    <!-- Import open_manipulator_x urdf file -->
+    <xacro:include filename="$(find open_manipulator_x_description)/urdf/open_manipulator_x.urdf.xacro" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="open_manipulator_x.ros2_control.xacro" />
+
+
+    <xacro:open_manipulator_x_ros2_control name="FakeSystem"/>
+
+    <xacro:if value="$(arg sim_ignition)">
+        <gazebo>
+            <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+                <parameters>/home/steve/Open_Manipulator/OpenManipulatorX_ros2_Humble/src/custom/manipulatorx_ign/config/mx_controllers.yaml</parameters>
+                <controller_manager_node_name>controller_manager</controller_manager_node_name>
+            </plugin>
+        </gazebo>
+    </xacro:if>
+
+</robot>
